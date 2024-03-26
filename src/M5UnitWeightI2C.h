@@ -26,6 +26,8 @@ class M5UnitWeightI2C {
     uint8_t _sda;
     uint8_t _scl;
     uint32_t _speed;
+    float SCALE = 1;
+    long OFFSET = 0;
     bool writeBytes(uint8_t addr, uint8_t reg, uint8_t *buffer, uint8_t length);
     bool readBytes(uint8_t addr, uint8_t reg, uint8_t *buffer, uint8_t length);
 
@@ -56,6 +58,41 @@ class M5UnitWeightI2C {
     uint8_t getAvgFilter(void);
     bool setEmaFilter(uint8_t ema);
     uint8_t getEmaFilter(void);
+
+    // returns an average reading; times = how many times to read
+    long read_average(byte times = 10);
+
+    // returns (read_average() - OFFSET), that is the current value without the
+    // tare weight; times = how many readings to do
+    double get_value(byte times = 1);
+
+    // returns get_value() divided by SCALE, that is the raw value divided by a
+    // value obtained via calibration times = how many readings to do
+    float get_units(byte times = 1);
+
+    // set the OFFSET value for tare weight; times = how many times to read the
+    // tare value
+    void tare();
+
+    // set the SCALE value; this value is used to convert the raw data to "human
+    // readable" data (measure units)
+    void set_scale(float scale = 1.f);
+
+    // get the current SCALE
+    float get_scale();
+
+    // set OFFSET, the value that's subtracted from the actual reading (tare
+    // weight)
+    void set_offset(long offset = 0);
+
+    // get the current OFFSET
+    long get_offset();
+
+    // puts the chip into power down mode
+    // void power_down();
+
+    // // wakes up the chip after power down mode
+    // void power_up();
 };
 
 #endif

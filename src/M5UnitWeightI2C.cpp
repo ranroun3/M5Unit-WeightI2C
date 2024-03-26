@@ -196,3 +196,46 @@ void M5UnitWeightI2C::jumpBootloader(void) {
 
     writeBytes(_addr, JUMP_TO_BOOTLOADER_REG, (uint8_t *)&value, 1);
 }
+
+#TODO FIGURE OUT HOW TO HANDLE NEGATIVE
+#TODO also maybe convert to doubles?
+
+float M5UnitWeightI2C::read_average(byte times) {
+	float sum = 0;
+	for (byte i = 0; i < times; i++) {
+		sum += getWeight();
+		// Probably will do no harm on AVR but will feed the Watchdog Timer (WDT) on ESP.
+		// https://github.com/bogde/HX711/issues/73
+		delay(0);
+	}
+	return sum / times;
+}
+
+float M5UnitWeightI2C::get_value(byte times) {
+	return read_average(times) - OFFSET;
+}
+
+float M5UnitWeightI2C::get_units(byte times) {
+	return get_value(times) / SCALE;
+}
+void M5UnitWeightI2C::tare(void){
+// void M5UnitWeightI2C::tare(byte times) {
+	// float sum = read_average(times);
+	// set_offset(sum);
+    setOffset();
+}
+
+void M5UnitWeightI2C::set_scale(float scale) {
+	SCALE = scale;
+}
+
+float M5UnitWeightI2C::get_scale() {
+	return SCALE;
+}
+void M5UnitWeightI2C::set_offset(long offset) {
+	OFFSET = offset;
+}
+
+long M5UnitWeightI2C::get_offset() {
+	return OFFSET;
+}
