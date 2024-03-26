@@ -197,8 +197,8 @@ void M5UnitWeightI2C::jumpBootloader(void) {
     writeBytes(_addr, JUMP_TO_BOOTLOADER_REG, (uint8_t *)&value, 1);
 }
 
-#TODO FIGURE OUT HOW TO HANDLE NEGATIVE
-#TODO also maybe convert to doubles?
+// #TODO FIGURE OUT HOW TO HANDLE NEGATIVE
+// #TODO also maybe convert to doubles?
 
 float M5UnitWeightI2C::read_average(byte times) {
 	float sum = 0;
@@ -219,9 +219,6 @@ float M5UnitWeightI2C::get_units(byte times) {
 	return get_value(times) / SCALE;
 }
 void M5UnitWeightI2C::tare(void){
-// void M5UnitWeightI2C::tare(byte times) {
-	// float sum = read_average(times);
-	// set_offset(sum);
     setOffset();
 }
 
